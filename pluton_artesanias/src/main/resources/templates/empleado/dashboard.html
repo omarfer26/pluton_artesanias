@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard Empleado</title>
+</head>
+<body>
+
+<h2>Bienvenido, <span th:text="${empleado.nombre}"></span></h2>
+
+<h3>Pedidos asignados</h3>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Estado</th>
+        <th>Total</th>
+        <th>Acciones</th>
+    </tr>
+
+    <tr th:each="p : ${pedidos}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.cliente.nombre}"></td>
+        <td th:text="${p.estado}"></td>
+        <td th:text="${p.total}"></td>
+        <td>
+            <a th:href="@{'/empleado/pedido/' + ${p.id}}">Ver</a>
+        </td>
+    </tr>
+
+</table>
+
+</body>
+</html>

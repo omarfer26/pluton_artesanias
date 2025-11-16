@@ -33,6 +33,9 @@ public class PedidoService {
     public Optional<Pedido> obtenerPedidoPorId(Long id) {
         return pedidoRepository.findById(id);
     }
-
+    
+    public List<Pedido> listarPorCliente(Long clienteId) {
+        return pedidoRepository.findByClienteId(clienteId);
+    }
 
 }

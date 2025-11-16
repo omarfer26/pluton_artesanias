@@ -20,6 +20,9 @@ public class Empleado {
 
     @Column(nullable = false, unique = true)
     private String correo;
+    
+    @Column(name = "contrasena_hash")
+    private String contrasenaHash;
 
     @ManyToOne
     @JoinColumn(name = "rol_id", nullable = false)

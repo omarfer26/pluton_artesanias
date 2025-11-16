@@ -21,6 +21,9 @@ public class Cliente {
 
     @Column(nullable = false, unique = true)
     private String correo;
+    
+    @Column(name = "contrasena_hash")
+    private String contrasenaHash;
 
     private String telefono;
 
