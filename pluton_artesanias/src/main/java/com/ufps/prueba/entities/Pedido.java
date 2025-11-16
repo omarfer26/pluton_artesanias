@@ -1,0 +1,55 @@
+package com.ufps.prueba.entities;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+@Entity
+@Table(name = "pedidos")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Pedido {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
+
+    @Column(name = "direccion_envio_id")
+    private Long direccionEnvioId;
+
+    @ManyToOne
+    @JoinColumn(name = "empleado_asignado_id")
+    private Empleado empleadoAsignado;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoPedido estado;
+
+    private BigDecimal total;
+
+    private String notas;
+
+    @Column(name = "creado_en")
+    private LocalDateTime creadoEn;
+
+    @Column(name = "actualizado_en")
+    private LocalDateTime actualizadoEn;
+    
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<DetallePedido> detalles;
+
+
+    public enum EstadoPedido {
+        CREATED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+    }
+}
