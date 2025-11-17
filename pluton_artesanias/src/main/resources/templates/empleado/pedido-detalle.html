@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Pedido - Empleado</title>
+</head>
+<body>
+<h2>Pedido #<span th:text="${pedido.id}"></span></h2>
+
+<p><strong>Cliente:</strong> <span th:text="${pedido.clienteNombre}"></span></p>
+<p><strong>Estado actual:</strong> <span th:text="${pedido.estadoPedido}"></span></p>
+<p><strong>Total:</strong> $<span th:text="${pedido.total}"></span></p>
+<p><strong>Notas actuales:</strong> <span th:text="${pedido.notas} ?: 'Ninguna'"></span></p>
+
+<hr>
+
+<h3>Editar Estado y Notas</h3>
+<form th:action="@{'/empleado/dashboard/pedido/' + ${pedido.id} + '/actualizar'}" method="post">
+    <label>Estado:</label>
+    <select name="estado">
+        <option value="CREATED" th:selected="${pedido.estadoPedido == 'CREATED'}">CREATED</option>
+        <option value="PROCESSING" th:selected="${pedido.estadoPedido == 'PROCESSING'}">PROCESSING</option>
+        <option value="SHIPPED" th:selected="${pedido.estadoPedido == 'SHIPPED'}">SHIPPED</option>
+        <option value="DELIVERED" th:selected="${pedido.estadoPedido == 'DELIVERED'}">DELIVERED</option>
+        <option value="CANCELLED" th:selected="${pedido.estadoPedido == 'CANCELLED'}">CANCELLED</option>
+    </select>
+    <br><br>
+    <label>Notas:</label>
+    <textarea name="notas" rows="4" cols="50" th:text="${pedido.notas}"></textarea>
+    <br><br>
+
+    <h3>Productos del Pedido (Modificar Precios)</h3>
+    <table border="1">
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unit.</th>
+            <th>Subtotal</th>
+            <th>Personalización</th>
+        </tr>
+        <tr th:each="d, iterStat : ${pedido.detalles}">
+            <td th:text="${d.productoNombre}"></td>
+            <td th:text="${d.cantidad}"></td>
+            <td>
+                <input type="number" step="0.01" name="precios" th:value="${d.unitPrice}"/>
+            </td>
+            <td th:text="${d.subtotal}"></td>
+        </tr>
+    </table>
+
+    <br>
+    <button type="submit">Guardar Cambios</button>
+</form>
+
+<hr>
+
+<!-- Cancelar pedido si no está entregado -->
+<div th:if="${pedido.estadoPedido != 'DELIVERED'}">
+    <form th:action="@{'/empleado/pedido/' + ${pedido.id} + '/cancelar'}" method="post">
+        <button type="submit" style="background:red;color:white;">Cancelar Pedido</button>
+    </form>
+</div>
+
+</body>
+</html>

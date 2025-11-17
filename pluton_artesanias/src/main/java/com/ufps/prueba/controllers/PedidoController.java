@@ -4,6 +4,7 @@ import com.ufps.prueba.entities.Pedido;
 import com.ufps.prueba.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,9 +42,15 @@ public class PedidoController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+    
+    @GetMapping("/api/pedidos/activos")
+    public List<Pedido> listarPedidosActivos() {
+        return pedidoService.obtenerPedidosActivos();
+    }
 
     @DeleteMapping("/{id}")
     public void eliminarPedido(@PathVariable Long id) {
         pedidoService.eliminarPedido(id);
     }
+    
 }

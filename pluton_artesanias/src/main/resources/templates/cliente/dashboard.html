@@ -24,11 +24,13 @@
             <td th:text="${p.estado}"></td>
             <td th:text="${p.total}"></td>
             <td>
-                <a th:href="@{'/cliente/pedido/' + ${p.id}}">Ver detalles</a>
+                <a th:href="@{'/cliente/dashboard/pedido/' + ${p.id}}">Ver detalles</a>
             </td>
         </tr>
     </tbody>
 </table>
+
+<a href="/cliente/logout">Cerrar sesión</a>
 
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.ufps.prueba.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.ufps.prueba.dto.ProductoDTO;
 
 import java.math.BigDecimal;
 

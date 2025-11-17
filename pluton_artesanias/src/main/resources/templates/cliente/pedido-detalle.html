@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Pedido</title>
+</head>
+<body>
+<h2>Pedido #<span th:text="${pedido.id}"></span></h2>
+
+<p><strong>Cliente:</strong> <span th:text="${pedido.clienteNombre}"></span></p>
+<p><strong>Estado:</strong> <span th:text="${pedido.estadoPedido}"></span></p>
+<p><strong>Total:</strong> $<span th:text="${pedido.total}"></span></p>
+<p><strong>Notas:</strong> <span th:text="${pedido.notas} ?: 'Ninguna'"></span></p>
+
+<hr>
+
+<h3>Productos del Pedido</h3>
+<table border="1">
+    <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Unit.</th>
+        <th>Subtotal</th>
+        <th>Personalización</th>
+    </tr>
+    <tr th:each="d : ${pedido.detalles}">
+        <td th:text="${d.productoNombre}"></td>
+        <td th:text="${d.cantidad}"></td>
+        <td th:text="${d.unitPrice}"></td>
+        <td th:text="${d.subtotal}"></td>
+    </tr>
+</table>
+
+<hr>
+
+<!-- Cancelar pedido solo si no está entregado ni cancelado -->
+<div th:if="${pedido.estadoPedido != 'DELIVERED' and pedido.estadoPedido != 'CANCELLED'}">
+    <form th:action="@{'/cliente/pedido/' + ${pedido.id} + '/cancelar'}" method="post">
+        <button type="submit" style="background:red;color:white;">Cancelar Pedido</button>
+    </form>
+</div>
+</body>
+</html>

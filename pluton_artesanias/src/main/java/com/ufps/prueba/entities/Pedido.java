@@ -48,7 +48,6 @@ public class Pedido {
     @JsonManagedReference
     private List<DetallePedido> detalles;
 
-
     public enum EstadoPedido {
         CREATED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
     }

@@ -1,8 +1,17 @@
 package com.ufps.prueba.controllers;
 
+import com.ufps.prueba.dto.PedidoDTO;
 import com.ufps.prueba.entities.Cliente;
+import com.ufps.prueba.entities.Pedido;
 import com.ufps.prueba.services.ClienteService;
+import com.ufps.prueba.services.DetallePedidoService;
+import com.ufps.prueba.services.PedidoService;
+
 import jakarta.servlet.http.HttpSession;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +23,15 @@ public class ClienteViewController {
 
     @Autowired
     private ClienteService clienteService;
+    
+    @Autowired
+    private PedidoService pedidoService;
+    
+    @Autowired
+    private DetallePedidoService detallePedidoService;
+    
+    private Pedido.EstadoPedido estadoPedido;
+    Pedido pedido = new Pedido();
 
     @GetMapping("/login")
     public String mostrarLogin() {
@@ -21,19 +39,23 @@ public class ClienteViewController {
     }
 
     @PostMapping("/login")
-    public String procesarLogin(@RequestParam String correo,
-                                HttpSession session) {
+    public String loginCliente(@RequestParam String correo,
+                               @RequestParam String contrasena,
+                               Model model,
+                               HttpSession session) {
 
         Cliente cliente = clienteService.buscarPorCorreo(correo);
 
-        if (cliente == null) {
-            return "redirect:/cliente/login?error=true";
+        if (cliente == null || !cliente.getContrasenaHash().equals(contrasena)) {
+            model.addAttribute("error", "Credenciales inválidas");
+            return "login-cliente";
         }
 
         session.setAttribute("cliente", cliente);
 
         return "redirect:/cliente/dashboard";
     }
+
 
     @GetMapping("/dashboard")
     public String mostrarDashboard(HttpSession session, Model model) {
@@ -44,8 +66,34 @@ public class ClienteViewController {
             return "redirect:/cliente/login";
         }
 
+        List<Pedido> pedidos = pedidoService.listarPorCliente(cliente.getId());
+
         model.addAttribute("cliente", cliente);
+        model.addAttribute("pedidos", pedidos);
 
         return "cliente/dashboard";
     }
+    
+    @GetMapping("/dashboard/pedido/{id}")
+    public String verPedido(@PathVariable Long id, Model model) {
+        PedidoDTO pedidoDTO = pedidoService.obtenerPedidoCompleto(id);
+        model.addAttribute("pedido", pedidoDTO);
+        return "cliente/pedido-detalle";
+    }
+
+    @PostMapping("/dashboard/pedido/{id}/cancelar")
+    public String cancelarPedido(@PathVariable Long id) {
+        PedidoDTO pedidoDTO = pedidoService.obtenerPedidoCompleto(id);
+		pedido.setEstado(pedidoDTO.getEstadoPedido());
+        pedidoService.actualizarPedido(pedidoDTO);
+        return "redirect:/cliente/dashboard";
+    }
+    
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/cliente/login";
+    }
+
+
 }
