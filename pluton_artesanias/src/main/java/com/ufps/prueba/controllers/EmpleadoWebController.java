@@ -1,6 +1,5 @@
 package com.ufps.prueba.controllers;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +32,7 @@ public class EmpleadoWebController {
     
     @Autowired
     private PedidoService pedidoService;
-    
-    private Pedido.EstadoPedido estadoPedido;
+
     Pedido pedido = new Pedido();
     
     @GetMapping("/login")
@@ -55,7 +52,6 @@ public class EmpleadoWebController {
             return "login-empleado";
         }
 
-        // Guardarlo en sesión
         model.addAttribute("empleado", emp.get());
         return "redirect:/empleado/dashboard/" + emp.get().getId();
     }
@@ -82,19 +78,25 @@ public class EmpleadoWebController {
 
     @PostMapping("/dashboard/pedido/{id}/actualizar")
     public String actualizarPedido(@PathVariable Long id,
-                                   @ModelAttribute PedidoDTO pedidoDTO) {
-        pedidoDTO.setId(id);
-        pedidoService.actualizarPedido(pedidoDTO);
+                                   @RequestParam("estado") String estado,
+                                   @RequestParam("notas") String notas) {
+
+        pedidoService.actualizarPedido(id, estado, notas);
         return "redirect:/empleado/dashboard/pedido/" + id;
     }
-
+    
     @PostMapping("/dashboard/pedido/{id}/cancelar")
     public String cancelarPedido(@PathVariable Long id) {
-        PedidoDTO pedidoDTO = pedidoService.obtenerPedidoCompleto(id);
-        pedido.setEstado(pedidoDTO.getEstadoPedido());
-        pedidoService.actualizarPedido(pedidoDTO);
+
+        pedidoService.actualizarPedido(
+                id,
+                "CANCELLED",
+                "Pedido cancelado por el empleado"
+        );
+
         return "redirect:/empleado/dashboard";
     }
+
 
     @GetMapping("/logout")
     public String logoutEmpleado(HttpSession session) {

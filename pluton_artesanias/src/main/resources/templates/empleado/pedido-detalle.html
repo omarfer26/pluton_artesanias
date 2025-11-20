@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Detalle del Pedido - Empleado</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 <h2>Pedido #<span th:text="${pedido.id}"></span></h2>
 
 <p><strong>Cliente:</strong> <span th:text="${pedido.clienteNombre}"></span></p>
-<p><strong>Estado actual:</strong> <span th:text="${pedido.estadoPedido}"></span></p>
+<p><strong>Estado actual:</strong> <span th:text="${pedido.estado}"></span></p>
 <p><strong>Total:</strong> $<span th:text="${pedido.total}"></span></p>
 <p><strong>Notas actuales:</strong> <span th:text="${pedido.notas} ?: 'Ninguna'"></span></p>
 
@@ -18,11 +19,11 @@
 <form th:action="@{'/empleado/dashboard/pedido/' + ${pedido.id} + '/actualizar'}" method="post">
     <label>Estado:</label>
     <select name="estado">
-        <option value="CREATED" th:selected="${pedido.estadoPedido == 'CREATED'}">CREATED</option>
-        <option value="PROCESSING" th:selected="${pedido.estadoPedido == 'PROCESSING'}">PROCESSING</option>
-        <option value="SHIPPED" th:selected="${pedido.estadoPedido == 'SHIPPED'}">SHIPPED</option>
-        <option value="DELIVERED" th:selected="${pedido.estadoPedido == 'DELIVERED'}">DELIVERED</option>
-        <option value="CANCELLED" th:selected="${pedido.estadoPedido == 'CANCELLED'}">CANCELLED</option>
+        <option value="CREATED" th:selected="${pedido.estado == 'CREATED'}">CREATED</option>
+        <option value="PROCESSING" th:selected="${pedido.estado == 'PROCESSING'}">PROCESSING</option>
+        <option value="SHIPPED" th:selected="${pedido.estado == 'SHIPPED'}">SHIPPED</option>
+        <option value="DELIVERED" th:selected="${pedido.estado == 'DELIVERED'}">DELIVERED</option>
+        <option value="CANCELLED" th:selected="${pedido.estado == 'CANCELLED'}">CANCELLED</option>
     </select>
     <br><br>
     <label>Notas:</label>
@@ -54,8 +55,7 @@
 
 <hr>
 
-<!-- Cancelar pedido si no está entregado -->
-<div th:if="${pedido.estadoPedido != 'DELIVERED'}">
+<div th:if="${pedido.estado != 'DELIVERED'}">
     <form th:action="@{'/empleado/pedido/' + ${pedido.id} + '/cancelar'}" method="post">
         <button type="submit" style="background:red;color:white;">Cancelar Pedido</button>
     </form>

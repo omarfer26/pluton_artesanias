@@ -4,7 +4,6 @@ import com.ufps.prueba.dto.DetallePedidoDTO;
 import com.ufps.prueba.dto.PedidoDTO;
 import com.ufps.prueba.entities.DetallePedido;
 import com.ufps.prueba.entities.Pedido;
-import com.ufps.prueba.repositories.DetallePedidoRepository;
 import com.ufps.prueba.repositories.PedidoRepository;
 
 import jakarta.transaction.Transactional;
@@ -12,21 +11,22 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class PedidoService {
 
     @Autowired
-    private final PedidoRepository pedidoRepository;
-    private final DetallePedidoService detallePedidoService;
-    private DetallePedidoRepository detallePedidoRepository;
-    
+    private PedidoRepository pedidoRepository;
+
+    @Autowired
+    private DetallePedidoService detallePedidoService;
+
     public PedidoService(PedidoRepository pedidoRepository,
             DetallePedidoService detallePedidoService) {
 		this.pedidoRepository = pedidoRepository;
@@ -62,54 +62,60 @@ public class PedidoService {
         return pedidoRepository.findPedidosActivos(estadosNoActivos);
     }
     
+    private static final Set<String> ESTADOS_VALIDOS = Set.of(
+            "CREATED",
+            "PROCESSING",
+            "SHIPPED",
+            "DELIVERED",
+            "CANCELLED"
+    );
+    
     @Transactional
-    public PedidoDTO actualizarPedido(PedidoDTO pedidoDTO) {
-        Pedido pedido = pedidoRepository.findById(pedidoDTO.getId())
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
-        
-        pedido.setEstado(pedidoDTO.getEstadoPedido());
-        pedido.setNotas(pedidoDTO.getNotas());
-        pedido.setActualizadoEn(LocalDateTime.now());
-        pedidoRepository.save(pedido);
-        
-        List<DetallePedido> detalles = detallePedidoService.listarPorPedido(pedido.getId());
+    public void actualizarPedido(Long id, String estado, String notas) {
 
-        for (int i = 0; i < detalles.size(); i++) {
-            DetallePedido detalle = detalles.get(i);
-            DetallePedidoDTO dDTO = pedidoDTO.getDetalles().get(i);
-
-            detalle.setSubtotal(dDTO.getSubtotal());
-            detalle.setSubtotal(dDTO.getSubtotal().multiply(BigDecimal.valueOf(detalle.getCantidad())));
-            detallePedidoRepository.save(detalle);
+        if (!ESTADOS_VALIDOS.contains(estado)) {
+            throw new IllegalArgumentException("Estado inválido: " + estado);
         }
 
-        return obtenerPedidoCompleto(pedido.getId());
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+
+        pedido.setEstado(estado);
+        pedido.setNotas(notas);
+        pedido.setActualizadoEn(LocalDateTime.now());
+
+        pedidoRepository.save(pedido);
     }
 
+
+
+
     public PedidoDTO obtenerPedidoCompleto(Long pedidoId) {
+
         Pedido pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
         PedidoDTO pedidoDTO = new PedidoDTO();
         pedidoDTO.setId(pedido.getId());
         pedidoDTO.setClienteNombre(pedido.getCliente().getNombre());
-        pedidoDTO.setEstadoPedido(pedidoDTO.getEstadoPedido());
+        pedidoDTO.setEstado(pedido.getEstado());
         pedidoDTO.setNotas(pedido.getNotas());
         pedidoDTO.setTotal(pedido.getTotal());
         pedidoDTO.setCreadoEn(pedido.getCreadoEn());
         pedidoDTO.setActualizadoEn(pedido.getActualizadoEn());
-
+        
         List<DetallePedido> detalles = detallePedidoService.listarPorPedido(pedidoId);
+
         List<DetallePedidoDTO> detallesDTO = detalles.stream().map(det -> {
             DetallePedidoDTO dDTO = new DetallePedidoDTO();
             dDTO.setProducto(det.getProducto());
             dDTO.setCantidad(det.getCantidad());
             dDTO.setSubtotal(det.getSubtotal());
-            dDTO.setSubtotal(det.getSubtotal());
             return dDTO;
         }).collect(Collectors.toList());
 
         pedidoDTO.setDetalles(detallesDTO);
+
         return pedidoDTO;
     }
 

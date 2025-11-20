@@ -4,13 +4,11 @@ import com.ufps.prueba.dto.PedidoDTO;
 import com.ufps.prueba.entities.Cliente;
 import com.ufps.prueba.entities.Pedido;
 import com.ufps.prueba.services.ClienteService;
-import com.ufps.prueba.services.DetallePedidoService;
 import com.ufps.prueba.services.PedidoService;
 
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,11 +24,7 @@ public class ClienteViewController {
     
     @Autowired
     private PedidoService pedidoService;
-    
-    @Autowired
-    private DetallePedidoService detallePedidoService;
-    
-    private Pedido.EstadoPedido estadoPedido;
+
     Pedido pedido = new Pedido();
 
     @GetMapping("/login")
@@ -83,11 +77,16 @@ public class ClienteViewController {
 
     @PostMapping("/dashboard/pedido/{id}/cancelar")
     public String cancelarPedido(@PathVariable Long id) {
-        PedidoDTO pedidoDTO = pedidoService.obtenerPedidoCompleto(id);
-		pedido.setEstado(pedidoDTO.getEstadoPedido());
-        pedidoService.actualizarPedido(pedidoDTO);
+
+        pedidoService.actualizarPedido(
+                id,
+                "CANCELLED",
+                "Pedido cancelado por el cliente"
+        );
+
         return "redirect:/cliente/dashboard";
     }
+
     
     @GetMapping("/logout")
     public String logout(HttpSession session) {

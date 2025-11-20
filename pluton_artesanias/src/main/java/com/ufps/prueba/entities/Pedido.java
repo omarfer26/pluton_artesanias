@@ -5,7 +5,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -31,8 +30,9 @@ public class Pedido {
     @JoinColumn(name = "empleado_asignado_id")
     private Empleado empleadoAsignado;
 
-    @Enumerated(EnumType.STRING)
-    private EstadoPedido estado;
+    @Column(name = "estado")
+    private String estado;
+
 
     private BigDecimal total;
 
@@ -48,7 +48,4 @@ public class Pedido {
     @JsonManagedReference
     private List<DetallePedido> detalles;
 
-    public enum EstadoPedido {
-        CREATED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
-    }
 }

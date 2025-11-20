@@ -2,10 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Dashboard Empleado</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 
 <h2>Bienvenido, <span th:text="${empleado.nombre}"></span></h2>
+
+
+<a href="/empleado/logout">Cerrar sesión</a>
 
 <h3>Pedidos asignados</h3>
 
@@ -52,8 +56,6 @@
     </tr>
 
 </table>
-
-<a href="/empleado/logout">Cerrar sesión</a>
 
 </body>
 </html>

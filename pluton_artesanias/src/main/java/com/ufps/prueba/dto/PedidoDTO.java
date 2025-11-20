@@ -5,15 +5,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.ufps.prueba.entities.Pedido.EstadoPedido;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class PedidoDTO {
     private Long id;
-    private EstadoPedido estadoPedido;
+    private String estado;
     private BigDecimal total;
     private String notas;
     private Long clienteId;
