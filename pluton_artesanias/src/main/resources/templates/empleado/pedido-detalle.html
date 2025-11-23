@@ -16,7 +16,11 @@
 <hr>
 
 <h3>Editar Estado y Notas</h3>
-<form th:action="@{'/empleado/dashboard/pedido/' + ${pedido.id} + '/actualizar'}" method="post">
+
+<form th:action="@{'/empleado/dashboard/pedido/' + ${pedido.id} + '/actualizar'}" 
+      method="post"
+      th:if="${pedido.estado != 'DELIVERED' and pedido.estado != 'CANCELLED'}">
+
     <label>Estado:</label>
     <select name="estado">
         <option value="CREATED" th:selected="${pedido.estado == 'CREATED'}">CREATED</option>
@@ -40,7 +44,7 @@
         <tr th:each="d, iterStat : ${pedido.detalles}">
             <td th:text="${d.producto.nombre}"></td>
             <td th:text="${d.cantidad}"></td>
-            <td th:text="${d.subtotal}"></td>
+            <td><input type="text" th:value="${d.subtotal}" name="precio_[[${iterStat.index}]]"></td>
         </tr>
     </table>
 
@@ -48,13 +52,40 @@
     <button type="submit">Guardar Cambios</button>
 </form>
 
-<hr>
+<div th:if="${pedido.estado == 'DELIVERED' or pedido.estado == 'CANCELLED'}">
+    <label>Estado:</label>
+    <input type="text" th:value="${pedido.estado}" disabled>
+    <br><br>
+    <label>Notas:</label>
+    <textarea rows="4" cols="50" th:text="${pedido.notas}" disabled></textarea>
 
-<div th:if="${pedido.estado != 'DELIVERED'}">
+    <h3>Productos del Pedido</h3>
+    <table border="1">
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unit.</th>
+        </tr>
+        <tr th:each="d : ${pedido.detalles}">
+            <td th:text="${d.producto.nombre}"></td>
+            <td th:text="${d.cantidad}"></td>
+            <td th:text="${d.subtotal}"></td>
+        </tr>
+    </table>
+</div>
+
+<br>
+
+<div th:if="${pedido.estado != 'DELIVERED' and pedido.estado != 'CANCELLED'}">
     <form th:action="@{'/empleado/pedido/' + ${pedido.id} + '/cancelar'}" method="post">
         <button type="submit" style="background:red;color:white;">Cancelar Pedido</button>
     </form>
 </div>
+
+<hr>
+
+<br>
+<button onclick="window.history.back()">Regresar</button>
 
 </body>
 </html>

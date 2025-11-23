@@ -12,10 +12,10 @@
 
     <h3>Gestión administrativa</h3>
 
-    <a href="/empleado/inventario/productos">Inventario de Productos</a>
+    <a href="/empleado/inventario/productos"><button>Inventario de Productos</button></a>
     <br>
-
-    <a href="/empleado/inventario/material">Inventario de Materiales</a>
+	<br>
+    <a href="/empleado/inventario/material"><button>Inventario de Materiales</button></a>
     <br>
 
 </div>
@@ -38,7 +38,9 @@
 	        <td th:text="${p.estado}"></td>
 	        <td th:text="${p.total}"></td>
 	        <td>
-	            <a th:href="@{'/empleado/dashboard/pedido/' + ${p.id}}">Ver</a>
+	            <a th:href="@{'/empleado/dashboard/pedido/' + ${p.id}}">
+	            	<button>Ver</button>
+	            </a>
 	        </td>
 	    </tr>
 	
@@ -61,14 +63,19 @@
 	        <td th:text="${p.estado}"></td>
 	        <td th:text="${p.total}"></td>
 	        <td>
-	            <a th:href="@{'/empleado/dashboard/pedido/' + ${p.id}}">Ver</a>
+	            <a th:href="@{'/empleado/dashboard/pedido/' + ${p.id}}">
+	            	<button>Ver</button>
+	            </a>
 	        </td>
 	    </tr>
 	
 	</table>
 </div>
 
-<a href="/empleado/logout">Cerrar sesión</a>
+<br>
+<a href="/empleado/logout">
+	<button>Cerrar sesión</button>
+</a>
 
 </body>
 </html>

@@ -32,13 +32,16 @@
 
             <td>
                 <form th:action="@{'/empleado/inventario/productos/' + ${inv.id} + '/agregar'}" method="post">
-                    <input type="number" name="cantidad" min="1" required>
+                    <input type="number" name="cantidad" min="1" style="width: 100px;" required>
                     <button type="submit">+</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
+    
+    <br>
+    <button onclick="window.history.back()">Regresar</button>
 
 </div>
 

@@ -26,6 +26,9 @@ public class PedidoService {
 
     @Autowired
     private DetallePedidoService detallePedidoService;
+    
+    @Autowired
+    private InventarioService inventarioService;
 
     public PedidoService(PedidoRepository pedidoRepository,
             DetallePedidoService detallePedidoService) {
@@ -41,8 +44,23 @@ public class PedidoService {
         return pedidoRepository.findById(id);
     }
 
+    @Transactional
     public Pedido guardarPedido(Pedido pedido) {
-        return pedidoRepository.save(pedido);
+
+        for (DetallePedido det : pedido.getDetalles()) {
+            if (!inventarioService.puedeFabricar(det.getProducto().getId(), det.getCantidad())) {
+                throw new RuntimeException(
+                    "Stock insuficiente para el producto: " + det.getProducto().getNombre());
+            }
+        }
+
+        Pedido pedidoGuardado = pedidoRepository.save(pedido);
+
+        for (DetallePedido det : pedido.getDetalles()) {
+            inventarioService.puedeFabricar(det.getProducto().getId(), det.getCantidad());
+        }
+
+        return pedidoGuardado;
     }
 
     public void eliminarPedido(Long id) {
