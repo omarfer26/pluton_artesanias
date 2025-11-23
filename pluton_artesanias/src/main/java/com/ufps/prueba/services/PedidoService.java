@@ -87,9 +87,6 @@ public class PedidoService {
         pedidoRepository.save(pedido);
     }
 
-
-
-
     public PedidoDTO obtenerPedidoCompleto(Long pedidoId) {
 
         Pedido pedido = pedidoRepository.findById(pedidoId)

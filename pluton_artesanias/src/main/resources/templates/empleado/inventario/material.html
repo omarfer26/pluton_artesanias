@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Inventario – Materiales</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="page-container">
+
+    <h1>Inventario de Materiales</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Material</th>
+            <th>Cantidad</th>
+            <th>Reservado</th>
+            <th>Disponible</th>
+            <th>Actualizar</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="inv : ${inventario}">
+            <td th:text="${inv.id}"></td>
+            <td th:text="${inv.material.nombre}"></td>
+            <td th:text="${inv.cantidad}"></td>
+            <td th:text="${inv.reservado}"></td>
+            <td th:text="${inv.cantidad - inv.reservado}"></td>
+
+            <td>
+                <form th:action="@{'/empleado/inventario/material/' + ${inv.id} + '/agregar'}" method="post">
+                    <input type="number" name="cantidad" min="1" required>
+                    <button type="submit">+</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

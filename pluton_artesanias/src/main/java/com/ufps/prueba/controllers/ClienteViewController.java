@@ -35,19 +35,19 @@ public class ClienteViewController {
     @PostMapping("/login")
     public String loginCliente(@RequestParam String correo,
                                @RequestParam String contrasena,
-                               Model model,
-                               HttpSession session) {
+                               HttpSession session,
+                               Model model) {
 
         Cliente cliente = clienteService.buscarPorCorreo(correo);
 
-        if (cliente == null || !cliente.getContrasenaHash().equals(contrasena)) {
+        if (cliente == null || 
+            !cliente.getContrasenaHash().equals(contrasena)) {
             model.addAttribute("error", "Credenciales inválidas");
             return "login-cliente";
         }
 
         session.setAttribute("cliente", cliente);
-
-        return "redirect:/cliente/dashboard";
+        return "redirect:cliente/dashboard";
     }
 
 
@@ -89,10 +89,9 @@ public class ClienteViewController {
 
     
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logoutCliente(HttpSession session) {
         session.invalidate();
         return "redirect:/cliente/login";
     }
-
 
 }

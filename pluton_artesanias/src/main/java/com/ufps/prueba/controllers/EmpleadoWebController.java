@@ -16,6 +16,8 @@ import com.ufps.prueba.dto.PedidoDTO;
 import com.ufps.prueba.entities.Empleado;
 import com.ufps.prueba.entities.Pedido;
 import com.ufps.prueba.repositories.EmpleadoRepository;
+import com.ufps.prueba.services.InventarioMaterialService;
+import com.ufps.prueba.services.InventarioService;
 import com.ufps.prueba.services.PedidoService;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,6 +34,12 @@ public class EmpleadoWebController {
     
     @Autowired
     private PedidoService pedidoService;
+    
+    @Autowired
+    private InventarioService inventarioService;
+    
+    @Autowired
+    private InventarioMaterialService inventarioMaterialService;
 
     Pedido pedido = new Pedido();
     
@@ -41,9 +49,10 @@ public class EmpleadoWebController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String correo,
-                        @RequestParam String contrasena,
-                        Model model) {
+    public String loginEmpleado(@RequestParam String correo,
+                                @RequestParam String contrasena,
+                                HttpSession session,
+                                Model model) {
 
         Optional<Empleado> emp = empleadoRepository.findByCorreo(correo);
 
@@ -52,7 +61,7 @@ public class EmpleadoWebController {
             return "login-empleado";
         }
 
-        model.addAttribute("empleado", emp.get());
+        session.setAttribute("empleado", emp.get());
         return "redirect:/empleado/dashboard/" + emp.get().getId();
     }
     
@@ -61,11 +70,13 @@ public class EmpleadoWebController {
 
         Empleado empleado = empleadoRepository.findById(id).orElse(null);
         model.addAttribute("empleado", empleado);
+
         List<Pedido> pedidosActivos = pedidoController.listarPedidosActivos();
         model.addAttribute("pedidos", pedidosActivos);
+
         List<Pedido> totalPedidos = pedidoController.listarPedidos();
         model.addAttribute("totalPedidos", totalPedidos);
-        
+
         return "empleado/dashboard";
     }
     
@@ -96,6 +107,30 @@ public class EmpleadoWebController {
 
         return "redirect:/empleado/dashboard";
     }
+    
+    @GetMapping("/producto")
+    public String inventarioProductos(HttpSession session, Model model) {
+        Empleado empleado = (Empleado) session.getAttribute("empleado");
+
+        if (empleado == null) return "redirect:/empleado/login";
+        if (!empleado.getRol().getNombre().equals("ADMIN")) return "redirect:/empleado/dashboard";
+
+        model.addAttribute("inventarioProductos", inventarioService.listarInventarioProductos());
+
+        return "empleado/inventario/productos";
+    }
+
+    @GetMapping("/materiales")
+    public String inventarioMateriales(HttpSession session, Model model) {
+        Empleado empleado = (Empleado) session.getAttribute("empleado");
+
+        if (empleado == null) return "redirect:/empleado/login";
+        if (!empleado.getRol().getNombre().equals("ADMIN")) return "redirect:/empleado/dashboard";
+
+        model.addAttribute("inventarioMateriales", inventarioMaterialService.listarInventarioMateriales());
+
+        return "empleado/inventario/materiales";
+    }
 
 
     @GetMapping("/logout")
@@ -103,6 +138,5 @@ public class EmpleadoWebController {
         session.invalidate();
         return "redirect:/empleado/login";
     }
-
     
 }

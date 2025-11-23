@@ -1,0 +1,123 @@
+:root {
+    --rojo-oscuro: #9F2E25;
+    --ocre: #C7881E;
+    --verde-lima: #8BC53F;
+    --coral: #D8898F;
+    --menta: #A9C694;
+    --blanco: #FFFFFF;
+
+    --font-main: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: var(--blanco);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: clamp(10px, 5vw, 40px);
+    color: var(--rojo-oscuro);
+    display: block;
+}
+
+.page-container {
+    width: 100%;
+    max-width: 1100px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+h1, h2, h3 {
+    color: var(--rojo-oscuro);
+    margin-bottom: 15px;
+}
+
+button,
+.btn {
+    background: var(--ocre);
+    color: var(--blanco);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.25s ease;
+}
+
+button:hover,
+.btn:hover {
+    background: var(--rojo-oscuro);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+th {
+    background: var(--ocre);
+    color: var(--blanco);
+    padding: 12px 15px;
+}
+
+td {
+    background: var(--menta);
+    padding: 12px 15px;
+    color: var(--rojo-oscuro);
+}
+
+tr:nth-child(even) td {
+    background: #dce7d2;
+}
+
+input, select, textarea {
+    width: 100%;
+    max-width: 500px;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 2px solid var(--verde-lima);
+    border-radius: 8px;
+    font-size: 16px;
+    background: var(--blanco);
+}
+
+.card {
+    background: var(--blanco);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+
+    .page-container {
+        padding: 10px;
+        margin-top: 10px;
+    }
+
+    table, thead, tbody, tr, th, td {
+        display: block;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    tr {
+        margin-bottom: 12px;
+        border-bottom: 2px solid var(--ocre);
+        padding-bottom: 12px;
+    }
+
+    td {
+        padding-left: 10px;
+    }
+
+    button, .btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+}

@@ -34,5 +34,8 @@ public class Producto {
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<DetallePedido> detalles;
+    
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    private List<ProductoMaterial> materiales;
 
 }

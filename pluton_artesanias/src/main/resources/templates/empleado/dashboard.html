@@ -8,54 +8,67 @@
 
 <h2>Bienvenido, <span th:text="${empleado.nombre}"></span></h2>
 
+<div th:if="${empleado.rol.nombre == 'ADMIN'}">
+
+    <h3>Gestión administrativa</h3>
+
+    <a href="/empleado/inventario/productos">Inventario de Productos</a>
+    <br>
+
+    <a href="/empleado/inventario/material">Inventario de Materiales</a>
+    <br>
+
+</div>
+
+<div>
+	<h3>Pedidos asignados</h3>
+	
+	<table border="1">
+	    <tr>
+	        <th>ID</th>
+	        <th>Cliente</th>
+	        <th>Estado</th>
+	        <th>Total</th>
+	        <th>Acciones</th>
+	    </tr>
+	
+	    <tr th:each="p : ${pedidos}">
+	        <td th:text="${p.id}"></td>
+	        <td th:text="${p.cliente.nombre}"></td>
+	        <td th:text="${p.estado}"></td>
+	        <td th:text="${p.total}"></td>
+	        <td>
+	            <a th:href="@{'/empleado/dashboard/pedido/' + ${p.id}}">Ver</a>
+	        </td>
+	    </tr>
+	
+	</table>
+	
+	<h3>Total de pedidos</h3>
+	
+	<table border="1">
+	    <tr>
+	        <th>ID</th>
+	        <th>Cliente</th>
+	        <th>Estado</th>
+	        <th>Total</th>
+	        <th>Acciones</th>
+	    </tr>
+	
+	    <tr th:each="p : ${totalPedidos}">
+	        <td th:text="${p.id}"></td>
+	        <td th:text="${p.cliente.nombre}"></td>
+	        <td th:text="${p.estado}"></td>
+	        <td th:text="${p.total}"></td>
+	        <td>
+	            <a th:href="@{'/empleado/dashboard/pedido/' + ${p.id}}">Ver</a>
+	        </td>
+	    </tr>
+	
+	</table>
+</div>
 
 <a href="/empleado/logout">Cerrar sesión</a>
-
-<h3>Pedidos asignados</h3>
-
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Cliente</th>
-        <th>Estado</th>
-        <th>Total</th>
-        <th>Acciones</th>
-    </tr>
-
-    <tr th:each="p : ${pedidos}">
-        <td th:text="${p.id}"></td>
-        <td th:text="${p.cliente.nombre}"></td>
-        <td th:text="${p.estado}"></td>
-        <td th:text="${p.total}"></td>
-        <td>
-            <a th:href="@{'/empleado/dashboard/pedido/' + ${p.id}}">Ver</a>
-        </td>
-    </tr>
-
-</table>
-
-<h3>Total de pedidos</h3>
-
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Cliente</th>
-        <th>Estado</th>
-        <th>Total</th>
-        <th>Acciones</th>
-    </tr>
-
-    <tr th:each="p : ${totalPedidos}">
-        <td th:text="${p.id}"></td>
-        <td th:text="${p.cliente.nombre}"></td>
-        <td th:text="${p.estado}"></td>
-        <td th:text="${p.total}"></td>
-        <td>
-            <a th:href="@{'/empleado/dashboard/pedido/' + ${p.id}}">Ver</a>
-        </td>
-    </tr>
-
-</table>
 
 </body>
 </html>
