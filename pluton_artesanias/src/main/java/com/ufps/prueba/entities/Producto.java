@@ -2,6 +2,8 @@ package com.ufps.prueba.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.math.BigDecimal;
@@ -33,6 +35,7 @@ public class Producto {
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     @JsonManagedReference
+    @JsonIgnore
     private List<DetallePedido> detalles;
     
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)

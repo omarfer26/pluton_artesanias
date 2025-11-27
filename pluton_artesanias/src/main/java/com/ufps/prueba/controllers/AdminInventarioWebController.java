@@ -1,6 +1,7 @@
 package com.ufps.prueba.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +10,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ufps.prueba.dto.MaterialDTO;
+import com.ufps.prueba.dto.ProductoDTO;
+import com.ufps.prueba.entities.Material;
 import com.ufps.prueba.repositories.InventarioMaterialRepository;
 import com.ufps.prueba.repositories.InventarioRepository;
+import com.ufps.prueba.repositories.MaterialRepository;
+import com.ufps.prueba.services.ProductoService;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @Controller
 @RequestMapping("/empleado/inventario")
@@ -21,8 +29,12 @@ public class AdminInventarioWebController {
 
     @Autowired
     private InventarioMaterialRepository inventarioMaterialRepo;
-
-    // ----------- VISTAS -----------
+    
+    @Autowired
+    private ProductoService productoService;
+    
+    @Autowired
+    private MaterialRepository materialRepository;
 
     @GetMapping("/productos")
     public String verProductos(Model model) {
@@ -35,8 +47,6 @@ public class AdminInventarioWebController {
         model.addAttribute("inventario", inventarioMaterialRepo.findAll());
         return "empleado/inventario/material";
     }
-
-    // ----------- ACCIONES -----------
 
     @PostMapping("/productos/{id}/agregar")
     public String agregarProducto(@PathVariable int id, @RequestParam int cantidad) {

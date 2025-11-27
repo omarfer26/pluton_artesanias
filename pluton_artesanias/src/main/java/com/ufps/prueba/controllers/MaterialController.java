@@ -3,46 +3,51 @@ package com.ufps.prueba.controllers;
 import com.ufps.prueba.entities.Material;
 import com.ufps.prueba.repositories.MaterialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/admin/materiales")
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/materiales")
 public class MaterialController {
 
     @Autowired
     private MaterialRepository materialRepository;
 
     @GetMapping
-    public String listarMateriales(Model model) {
-        model.addAttribute("materiales", materialRepository.findAll());
-        return "admin/materiales/lista";
+    public List<Material> listar() {
+        return materialRepository.findAll();
     }
 
-    @GetMapping("/nuevo")
-    public String nuevoMaterial(Model model) {
-        model.addAttribute("material", new Material());
-        return "admin/materiales/form";
+    @GetMapping("/{id}")
+    public Material obtener(@PathVariable Long id) {
+        return materialRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Material no encontrado"));
     }
 
-    @PostMapping("/guardar")
-    public String guardarMaterial(@ModelAttribute Material material) {
-        materialRepository.save(material);
-        return "redirect:/admin/materiales";
+    @PostMapping
+    public Material crear(@RequestBody Material material) {
+        material.setId(null);
+        return materialRepository.save(material);
     }
 
-    @GetMapping("/{id}/editar")
-    public String editarMaterial(@PathVariable Long id, Model model) {
+    @PutMapping("/{id}")
+    public Material actualizar(@PathVariable Long id, @RequestBody Material material) {
         Material m = materialRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Material no encontrado"));
-        model.addAttribute("material", m);
-        return "admin/materiales/form";
+
+        m.setNombre(material.getNombre());
+        m.setUnidad(material.getUnidad());
+        m.setStockActual(material.getStockActual());
+        m.setStockMinimo(material.getStockMinimo());
+        m.setProveedor(material.getProveedor());
+        m.setTiempoReposicionDias(material.getTiempoReposicionDias());
+
+        return materialRepository.save(m);
     }
 
-    @PostMapping("/{id}/eliminar")
-    public String eliminarMaterial(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public void eliminar(@PathVariable Long id) {
         materialRepository.deleteById(id);
-        return "redirect:/admin/materiales";
     }
 }

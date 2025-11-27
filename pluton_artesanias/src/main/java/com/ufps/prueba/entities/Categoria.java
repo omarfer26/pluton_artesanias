@@ -2,7 +2,6 @@ package com.ufps.prueba.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
 
 @Entity
 @Table(name = "categorias")
@@ -21,6 +20,4 @@ public class Categoria {
 
     private String descripcion;
 
-    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Producto> productos;
 }

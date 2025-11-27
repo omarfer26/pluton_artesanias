@@ -1,18 +1,21 @@
 package com.ufps.prueba.controllers;
 
+import com.ufps.prueba.dto.MaterialDTO;
 import com.ufps.prueba.entities.InventarioMaterial;
+import com.ufps.prueba.entities.Material;
 import com.ufps.prueba.repositories.InventarioMaterialRepository;
 import com.ufps.prueba.repositories.MaterialRepository;
 
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/empleado/inventario/material")
+@RequestMapping("/inventario/material")
 public class InventarioMaterialController {
 
     @Autowired

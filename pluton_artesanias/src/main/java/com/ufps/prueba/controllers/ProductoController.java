@@ -28,7 +28,7 @@ public class ProductoController {
 
     @PostMapping
     public Producto crearProducto(@RequestBody Producto producto) {
-        return productoService.guardarProducto(producto);
+        return productoService.crearProducto(producto);
     }
 
     @PutMapping("/{id}")

@@ -1,5 +1,7 @@
 package com.ufps.prueba.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +18,7 @@ public class ProductoMaterial {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 

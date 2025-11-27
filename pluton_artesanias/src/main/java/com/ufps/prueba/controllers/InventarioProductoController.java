@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/admin/inventario/productos")
+@RequestMapping("/inventario/productos")
 public class InventarioProductoController {
 
     @Autowired
