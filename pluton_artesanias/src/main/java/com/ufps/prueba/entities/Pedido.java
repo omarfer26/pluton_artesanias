@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "pedidos")
@@ -33,7 +33,6 @@ public class Pedido {
     @Column(name = "estado")
     private String estado;
 
-
     private BigDecimal total;
 
     private String notas;
@@ -44,8 +43,13 @@ public class Pedido {
     @Column(name = "actualizado_en")
     private LocalDateTime actualizadoEn;
     
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<DetallePedido> detalles;
+    @Column(name = "fecha_entrega")
+    private LocalDateTime fechaEntrega;
+    
+    @OneToMany(mappedBy = "pedido",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @Builder.Default
+    private List<DetallePedido> detalles = new ArrayList<>();
 
 }

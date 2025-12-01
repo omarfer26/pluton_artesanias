@@ -12,10 +12,13 @@
 <p><strong>Estado actual:</strong> <span th:text="${pedido.estado}"></span></p>
 <p><strong>Total:</strong> $<span th:text="${pedido.total}"></span></p>
 <p><strong>Notas actuales:</strong> <span th:text="${pedido.notas} ?: 'Ninguna'"></span></p>
+<p><strong>Fecha de entrega:</strong> 
+    <span th:text="${#temporals.format(pedido.fechaEntrega, 'yyyy-MM-dd''T''HH:mm')}"></span>
+</p>
 
 <hr>
 
-<h3>Editar Estado y Notas</h3>
+<h3>Editar Estado, Notas y Fecha de Entrega</h3>
 
 <form th:action="@{'/empleado/dashboard/pedido/' + ${pedido.id} + '/actualizar'}" 
       method="post"
@@ -30,8 +33,14 @@
         <option value="CANCELLED" th:selected="${pedido.estado == 'CANCELLED'}">CANCELLED</option>
     </select>
     <br><br>
+
     <label>Notas:</label>
     <textarea name="notas" rows="4" cols="50" th:text="${pedido.notas}"></textarea>
+    <br><br>
+
+    <label>Fecha de Entrega (opcional):</label>
+    <input type="datetime-local" name="fechaEntrega"
+       th:value="${pedido.fechaEntrega != null ? #temporals.format(pedido.fechaEntrega, 'yyyy-MM-dd''T''HH:mm') : ''}" />
     <br><br>
 
     <h3>Productos del Pedido (Modificar Precios)</h3>
@@ -58,7 +67,10 @@
     <br><br>
     <label>Notas:</label>
     <textarea rows="4" cols="50" th:text="${pedido.notas}" disabled></textarea>
-
+    <br><br>
+    <label>Fecha de entrega:</label>
+    <input type="text" th:value="${pedido.fechaEntrega != null} ? ${#temporals.format(pedido.fechaEntrega,'yyyy-MM-dd HH:mm')} : 'No asignada'" disabled>
+    
     <h3>Productos del Pedido</h3>
     <table border="1">
         <tr>
@@ -83,7 +95,6 @@
 </div>
 
 <hr>
-
 <br>
 <button onclick="window.history.back()">Regresar</button>
 

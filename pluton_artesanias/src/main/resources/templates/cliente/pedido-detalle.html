@@ -6,12 +6,16 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
+
 <h2>Pedido #<span th:text="${pedido.id}"></span></h2>
 
 <p><strong>Cliente:</strong> <span th:text="${pedido.clienteNombre}"></span></p>
-<p><strong>Estado:</strong> <span th:text="${pedido.estadoPedido}"></span></p>
+<p><strong>Estado:</strong> <span th:text="${pedido.estado}"></span></p>
 <p><strong>Total:</strong> $<span th:text="${pedido.total}"></span></p>
-<p><strong>Notas:</strong> <span th:text="${pedido.notas} ?: 'Ninguna'"></span></p>
+<p><strong>Fecha de entrega:</strong> <span th:text="${#temporals.format(pedido.fechaEntrega,'yyyy-MM-dd HH:mm')}"></span></p>
+<p><strong>Notas:</strong> 
+    <span th:text="${pedido.notas != null ? pedido.notas : 'Ninguna'}"></span>
+</p>
 
 <hr>
 
@@ -20,25 +24,27 @@
     <tr>
         <th>Producto</th>
         <th>Cantidad</th>
-        <th>Precio Unit.</th>
         <th>Subtotal</th>
-        <th>Personalización</th>
     </tr>
+
     <tr th:each="d : ${pedido.detalles}">
-        <td th:text="${d.productoNombre}"></td>
+        <td th:text="${d.producto.nombre}"></td>
         <td th:text="${d.cantidad}"></td>
-        <td th:text="${d.unitPrice}"></td>
         <td th:text="${d.subtotal}"></td>
     </tr>
 </table>
 
 <hr>
 
-<!-- Cancelar pedido solo si no está entregado ni cancelado -->
-<div th:if="${pedido.estadoPedido != 'DELIVERED' and pedido.estadoPedido != 'CANCELLED'}">
-    <form th:action="@{'/cliente/pedido/' + ${pedido.id} + '/cancelar'}" method="post">
+<!-- Solo mostrar cancelar si NO está cancelado ni entregado -->
+<div th:if="${pedido.estado != 'DELIVERED' and pedido.estado != 'CANCELLED'}">
+    <form th:action="@{'/cliente/dashboard/pedido/' + ${pedido.id} + '/cancelar'}" method="post">
         <button type="submit" style="background:red;color:white;">Cancelar Pedido</button>
     </form>
 </div>
+
+<br>
+<button onclick="window.history.back()">Regresar</button>
+
 </body>
 </html>

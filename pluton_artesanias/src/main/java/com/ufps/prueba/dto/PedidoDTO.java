@@ -18,6 +18,7 @@ public class PedidoDTO {
     private String clienteNombre;
     private Long direccionEnvioId;
     private Long empleadoAsignadoId;
+    private LocalDateTime fechaEntrega;
     private LocalDateTime creadoEn;
     private LocalDateTime actualizadoEn;
     private List<DetallePedidoDTO> detalles;

@@ -28,9 +28,13 @@ public class DetallePedido {
     @JoinColumn(name = "producto_id", nullable = false)
     @JsonBackReference
     private Producto producto;
+    
+    @Column(name = "unit_price", nullable = false)
+    private BigDecimal unitPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "pedido_id", nullable = false)
     @JsonBackReference
     private Pedido pedido;
+
 }

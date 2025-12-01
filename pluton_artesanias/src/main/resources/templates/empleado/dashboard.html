@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Dashboard Empleado</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 
-<h2>Bienvenido, <span th:text="${empleado.nombre}"></span></h2>
+<h2>Bienvenido, <span th:text="${empleado != null ? empleado.nombre : cliente.nombre}"></span></h2>
 
-<div th:if="${empleado.rol.nombre == 'ADMIN'}">
-
+<!-- Sección de administrador/empleado -->
+<div th:if="${empleado != null && empleado.rol.nombre == 'ADMIN'}">
     <h3>Gestión administrativa</h3>
-
     <a href="/empleado/inventario/productos"><button>Inventario de Productos</button></a>
-    <br>
-	<br>
+    <br><br>
     <a href="/empleado/inventario/material"><button>Inventario de Materiales</button></a>
     <br>
-
 </div>
 
 <div>
@@ -73,9 +70,86 @@
 </div>
 
 <br>
-<a href="/empleado/logout">
-	<button>Cerrar sesión</button>
+<a th:href="${empleado != null ? '/empleado/logout' : '/cliente/logout'}">
+    <button>Cerrar sesión</button>
 </a>
+
+<!-- Alertas flotantes -->
+<div id="alertas"></div>
+<div id="toast" class="oculto"></div>
+
+<!-- Chat flotante -->
+<div id="chat-flotante">
+    <div id="chat-header">IA Chat <span id="cerrar-chat" style="cursor:pointer;">✖</span></div>
+    <div id="chat-mensajes"></div>
+    <input type="text" id="chat-input" style="flex: 1;" placeholder="Escribe un mensaje..." />
+    <button id="chat-enviar">Enviar</button>
+</div>
+
+<div id="usuario-data" 
+     th:data-id="${cliente != null ? cliente.id : empleado.id}" 
+     th:data-rol="${cliente != null ? 'CLIENTE' : 'EMPLEADO'}">
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const chat = document.getElementById("chat-flotante");
+    const mensajes = document.getElementById("chat-mensajes");
+    const input = document.getElementById("chat-input");
+    const enviar = document.getElementById("chat-enviar");
+    const cerrar = document.getElementById("cerrar-chat");
+
+    const usuarioData = document.getElementById("usuario-data");
+    const usuarioId = usuarioData.dataset.id;
+    const usuarioRol = usuarioData.dataset.rol; // "CLIENTE" o "EMPLEADO"
+
+    cerrar.onclick = () => chat.style.display = 'none';
+    enviar.onclick = () => enviarMensaje();
+    input.addEventListener("keypress", e => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            enviarMensaje();
+        }
+    });
+
+    function enviarMensaje() {
+        const texto = input.value.trim();
+        if (!texto) return;
+
+        agregarMensaje("Tú: " + texto, "usuario");
+        input.value = "";
+
+        fetch("/ia/mensaje", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "TOKEN_IG_SIMULADO"
+            },
+            body: JSON.stringify({
+                mensaje: texto,
+                empleado: { id: usuarioId },
+                producto: null,
+                cantidad: 0,
+                rol: usuarioRol // solo en JSON, backend puede leerlo para diferenciar
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.respuesta) agregarMensaje("IA: " + data.respuesta, "ia");
+            else if(data.error) agregarMensaje("Error: " + data.error, "ia");
+        })
+        .catch(err => agregarMensaje("Error: " + err.message, "ia"));
+    }
+
+    function agregarMensaje(texto, tipo) {
+        const div = document.createElement("div");
+        div.textContent = texto;
+        div.className = tipo === "usuario" ? "chat-mensaje chat-usuario" : "chat-mensaje chat-ia";
+        mensajes.appendChild(div);
+        mensajes.scrollTop = mensajes.scrollHeight;
+    }
+});
+</script>
 
 </body>
 </html>

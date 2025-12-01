@@ -1,5 +1,7 @@
 package com.ufps.prueba.controllers;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.ufps.prueba.dto.PedidoDTO;
 import com.ufps.prueba.entities.Empleado;
 import com.ufps.prueba.entities.Pedido;
+import com.ufps.prueba.entities.Producto;
 import com.ufps.prueba.repositories.EmpleadoRepository;
+import com.ufps.prueba.services.CategoriaService;
 import com.ufps.prueba.services.InventarioMaterialService;
 import com.ufps.prueba.services.InventarioService;
 import com.ufps.prueba.services.PedidoService;
+import com.ufps.prueba.services.ProductoService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -40,6 +45,12 @@ public class EmpleadoWebController {
     
     @Autowired
     private InventarioMaterialService inventarioMaterialService;
+    
+    @Autowired
+    private ProductoService productoService;
+
+    @Autowired
+    private CategoriaService categoriaService;
 
     Pedido pedido = new Pedido();
     
@@ -90,9 +101,10 @@ public class EmpleadoWebController {
     @PostMapping("/dashboard/pedido/{id}/actualizar")
     public String actualizarPedido(@PathVariable Long id,
                                    @RequestParam("estado") String estado,
-                                   @RequestParam("notas") String notas) {
+                                   @RequestParam("notas") String notas,
+                                   @RequestParam("fechaEntrega") LocalDateTime fechaEntrega) {
 
-        pedidoService.actualizarPedido(id, estado, notas);
+        pedidoService.actualizarPedido(id, estado, notas, fechaEntrega);
         return "redirect:/empleado/dashboard/pedido/" + id;
     }
     
@@ -102,7 +114,8 @@ public class EmpleadoWebController {
         pedidoService.actualizarPedido(
                 id,
                 "CANCELLED",
-                "Pedido cancelado por el empleado"
+                "Pedido cancelado por el empleado",
+                null
         );
 
         return "redirect:/empleado/dashboard";
@@ -132,6 +145,33 @@ public class EmpleadoWebController {
         return "empleado/inventario/materiales";
     }
 
+    @PostMapping("/productos/crear")
+    public String crearProducto(@RequestParam String nombre,
+                                @RequestParam String descripcion,
+                                @RequestParam BigDecimal precio,
+                                @RequestParam Long categoriaId,
+                                HttpSession session) {
+
+        Empleado empleado = (Empleado) session.getAttribute("empleado");
+        if (empleado == null) return "redirect:/empleado/login";
+        if (!empleado.getRol().getNombre().equals("ADMIN")) return "redirect:/empleado/dashboard";
+
+        Producto producto = new Producto();
+        producto.setNombre(nombre);
+        producto.setDescripcion(descripcion);
+        producto.setPrecio(precio);
+        producto.setCategoria(
+        	    categoriaService.obtenerCategoriaPorId(categoriaId)
+        	        .orElseThrow(() -> new RuntimeException("Categoría no encontrada"))
+        	);
+
+        productoService.guardarProducto(producto);
+
+        // Crear inventario inicial
+        inventarioService.crearInventario(producto.getId(), 1);
+
+        return "redirect:/empleado/producto";
+    }
 
     @GetMapping("/logout")
     public String logoutEmpleado(HttpSession session) {

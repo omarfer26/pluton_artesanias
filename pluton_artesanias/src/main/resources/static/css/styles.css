@@ -1,38 +1,35 @@
 :root {
-    --rojo-oscuro: #9F2E25;
-    --ocre: #C7881E;
-    --verde-lima: #8BC53F;
-    --coral: #D8898F;
-    --menta: #A9C694;
+    --fucsia: #CC0063;
+    --naranja: #E59700;
+    --morado: #4E007A;
+    --verde: #005C55;
+
+    --fucsia-pastel: #F4C2D7;
+    --naranja-pastel: #FFE4B2;
+    --morado-pastel: #D8B8E2;
+    --verde-pastel: #A7E0D9;
+
     --blanco: #FFFFFF;
 
     --font-main: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background: var(--blanco);
+    background: var(--naranja-pastel);
     font-family: var(--font-main);
     margin: 0;
     padding: clamp(10px, 5vw, 40px);
-    color: var(--rojo-oscuro);
-    display: block;
-}
-
-.page-container {
-    width: 100%;
-    max-width: 1100px;
-    padding: 20px;
-    margin-top: 20px;
+    color: var(--morado);
 }
 
 h1, h2, h3 {
-    color: var(--rojo-oscuro);
+    color: var(--fucsia);
     margin-bottom: 15px;
 }
 
 button,
 .btn {
-    background: var(--ocre);
+    background: var(--fucsia);
     color: var(--blanco);
     border: none;
     padding: 10px 18px;
@@ -44,7 +41,7 @@ button,
 
 button:hover,
 .btn:hover {
-    background: var(--rojo-oscuro);
+    background: var(--morado);
 }
 
 table {
@@ -57,19 +54,19 @@ table {
 }
 
 th {
-    background: var(--ocre);
+    background: var(--naranja);
     color: var(--blanco);
     padding: 12px 15px;
 }
 
 td {
-    background: var(--menta);
+    background: var(--verde-pastel);
     padding: 12px 15px;
-    color: var(--rojo-oscuro);
+    color: var(--morado);
 }
 
 tr:nth-child(even) td {
-    background: #dce7d2;
+    background: var(--naranja-pastel);
 }
 
 input, select, textarea {
@@ -77,27 +74,140 @@ input, select, textarea {
     max-width: 500px;
     padding: 10px;
     margin-bottom: 12px;
-    border: 2px solid var(--verde-lima);
+    border: 2px solid var(--fucsia);
     border-radius: 8px;
     font-size: 16px;
     background: var(--blanco);
+    color: var(--morado);
 }
 
 .card {
-    background: var(--blanco);
+    background: var(--morado-pastel);
     border-radius: 14px;
     padding: 20px;
     box-shadow: 0 0 12px rgba(0,0,0,0.15);
     margin-bottom: 20px;
 }
 
+/* CHAT FLOTANTE */
+#chat-flotante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    max-height: 400px;
+    background: var(--blanco);
+    border: 1px solid var(--morado);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+#chat-header {
+    background: var(--fucsia);
+    color: #fff;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#chat-mensajes {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background: var(--verde-pastel);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.chat-mensaje {
+    padding: 8px 12px;
+    border-radius: 12px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.chat-usuario {
+    background: var(--fucsia);
+    color: #fff;
+    align-self: flex-end;
+}
+
+.chat-ia {
+    background: var(--morado-pastel);
+    color: var(--morado);
+    align-self: flex-start;
+}
+
+#chat-input-container {
+    display: flex;
+    border-top: 1px solid var(--morado);
+}
+
+#chat-input {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 0;
+    outline: none;
+}
+
+#chat-enviar {
+    width: 60px;
+    border: none;
+    background: var(--fucsia);
+    color: #fff;
+    cursor: pointer;
+}
+
+/* ALERTAS FLOTANTES */
+#toast, .alerta-flotante {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--naranja);
+    color: var(--blanco);
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-weight: bold;
+    animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+#toast.oculto {
+    display: none;
+}
+
+.alerta-flotante {
+    bottom: 20px;
+    top: auto;
+    background: var(--naranja);
+    box-shadow: 0 0 5px #00000066;
+    margin-top: 5px;
+}
+
+/* ANIMACIONES */
+@keyframes fadein {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
-
-    .page-container {
-        padding: 10px;
-        margin-top: 10px;
-    }
-
     table, thead, tbody, tr, th, td {
         display: block;
     }
@@ -108,7 +218,7 @@ input, select, textarea {
 
     tr {
         margin-bottom: 12px;
-        border-bottom: 2px solid var(--ocre);
+        border-bottom: 2px solid var(--naranja);
         padding-bottom: 12px;
     }
 
@@ -119,5 +229,16 @@ input, select, textarea {
     button, .btn {
         width: 100%;
         margin-top: 10px;
+    }
+
+    #chat-flotante {
+        width: 90%;
+        bottom: 10px;
+        right: 5%;
+        max-height: 300px;
+    }
+
+    #chat-mensajes {
+        max-height: 180px;
     }
 }

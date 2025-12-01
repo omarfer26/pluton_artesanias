@@ -4,6 +4,8 @@ import com.ufps.prueba.entities.Inventario;
 import com.ufps.prueba.repositories.InventarioRepository;
 import com.ufps.prueba.repositories.ProductoRepository;
 
+import jakarta.transaction.Transactional;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,4 +42,20 @@ public class InventarioProductoController {
         inventarioRepository.save(inventario);
         return "redirect:/empleado/inventario/productos";
     }
+    
+    @Transactional
+    public void reservarProducto(Long productoId, int cantidad) {
+        Inventario inventario = inventarioRepository.findByProductoId(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        if (inventario.getCantidad() < cantidad) {
+            throw new RuntimeException("Stock insuficiente para reservar");
+        }
+
+        inventario.setCantidad(inventario.getCantidad() - cantidad);
+        inventario.setReservado(inventario.getReservado() + cantidad);
+
+        inventarioRepository.save(inventario);
+    }
+    
 }

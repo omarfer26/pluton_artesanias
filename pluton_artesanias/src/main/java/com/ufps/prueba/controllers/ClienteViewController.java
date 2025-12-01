@@ -25,7 +25,6 @@ public class ClienteViewController {
     @Autowired
     private PedidoService pedidoService;
 
-    Pedido pedido = new Pedido();
 
     @GetMapping("/login")
     public String mostrarLogin() {
@@ -47,7 +46,7 @@ public class ClienteViewController {
         }
 
         session.setAttribute("cliente", cliente);
-        return "redirect:cliente/dashboard";
+        return "redirect:/cliente/dashboard";
     }
 
 
@@ -81,7 +80,8 @@ public class ClienteViewController {
         pedidoService.actualizarPedido(
                 id,
                 "CANCELLED",
-                "Pedido cancelado por el cliente"
+                "Pedido cancelado por el cliente",
+                null
         );
 
         return "redirect:/cliente/dashboard";

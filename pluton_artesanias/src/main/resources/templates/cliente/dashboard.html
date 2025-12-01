@@ -25,13 +25,87 @@
             <td th:text="${p.estado}"></td>
             <td th:text="${p.total}"></td>
             <td>
-                <a th:href="@{'/cliente/dashboard/pedido/' + ${p.id}}">Ver detalles</a>
+                <a th:href="@{'/cliente/dashboard/pedido/' + ${p.id}}">
+                <button>Ver detalles</button>
+                </a>
             </td>
         </tr>
     </tbody>
 </table>
 
-<a href="/cliente/logout">Cerrar sesión</a>
+<a href="/cliente/logout">
+	<button>Cerrar sesión</button>
+	</a>
+
+<!-- Dentro de tu dashboard cliente -->
+<div id="chat-flotante">
+    <div id="chat-header">IA Chat <span id="cerrar-chat" style="cursor:pointer;">✖</span></div>
+    <div id="chat-mensajes"></div>
+    <input type="text" id="chat-input" placeholder="Escribe un mensaje..." />
+    <button type="button" id="chat-enviar">Enviar</button>
+
+</div>
+
+<div id="cliente-data" th:data-id="${cliente.id}"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const chat = document.getElementById("chat-flotante");
+    const mensajes = document.getElementById("chat-mensajes");
+    const input = document.getElementById("chat-input");
+    const enviar = document.getElementById("chat-enviar");
+    const cerrar = document.getElementById("cerrar-chat");
+
+    const clienteId = document.getElementById("cliente-data").dataset.id;
+
+    cerrar.onclick = () => chat.style.display = 'none';
+
+    enviar.onclick = () => enviarMensaje();
+    input.addEventListener("keypress", e => {
+        if (e.key === "Enter") {
+            e.preventDefault(); // evitar GET por Enter
+            enviarMensaje();
+        }
+    });
+
+    function enviarMensaje() {
+        const texto = input.value.trim();
+        if (!texto) return;
+        agregarMensaje("Tú: " + texto, "usuario");
+        input.value = "";
+
+        fetch("/ia/mensaje", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "TOKEN_IG_SIMULADO"
+            },
+            body: JSON.stringify({
+                mensaje: texto,
+                cliente: {id: clienteId},
+                producto: null,
+                cantidad: 0,
+                rol: "CLIENTE"
+            })
+        })
+
+        .then(res => res.json())
+        .then(data => {
+            if(data.respuesta) agregarMensaje("IA: " + data.respuesta, "ia");
+            else if(data.error) agregarMensaje("Error: " + data.error, "ia");
+        })
+        .catch(err => agregarMensaje("Error: " + err.message, "ia"));
+    }
+
+    function agregarMensaje(texto, tipo) {
+        const div = document.createElement("div");
+        div.textContent = texto;
+        div.className = tipo === "usuario" ? "chat-mensaje chat-usuario" : "chat-mensaje chat-ia";
+        mensajes.appendChild(div);
+        mensajes.scrollTop = mensajes.scrollHeight;
+    }
+});
+</script>
 
 </body>
 </html>
